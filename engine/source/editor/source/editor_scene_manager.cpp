@@ -18,13 +18,21 @@
 #include "runtime/function/render/render_camera.h"
 #include "runtime/function/render/render_system.h"
 
-namespace Pilot
+namespace Piccolo
 {
     void EditorSceneManager::initialize() {}
 
     void EditorSceneManager::tick(float delta_time)
     {
-        // todo: editor scene tick
+        std::shared_ptr<GObject> selected_gobject = getSelectedGObject().lock();
+        if (selected_gobject)
+        {
+            TransformComponent* transform_component = selected_gobject->tryGetComponent(TransformComponent);
+            if (transform_component)
+            {
+                transform_component->setDirtyFlag(true);
+            }
+        }
     }
 
     float intersectPlaneRay(glm::vec3 normal, float d, glm::vec3 origin, glm::vec3 dir)
@@ -570,4 +578,4 @@ namespace Pilot
     {
         return g_editor_global_context.m_render_system->getGuidOfPickedMesh(picked_uv);
     }
-} // namespace Pilot
+} // namespace Piccolo
